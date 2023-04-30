@@ -18,17 +18,12 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v3
     - name: Build and Run Docker Container
-      run: |
-        docker build -t my-app .
-        docker run -d -p 8080:8080 my-app
+    - run: docker build -t my-app . && docker run -d -p 8080:8080 my-app
       # Attendre que l'application soit démarrée
       # avant de lancer les tests
-      env:
+    - env:
         WAIT_TIME: 10
-      run: |
-        echo "Waiting for the app to start..."
-        sleep $WAIT_TIME
+    - run: echo "Waiting for the app to start..." && sleep $WAIT_TIME
       # Lancement des tests
       # (remplacer la commande ci-dessous par vos tests)
-      run: |
-        curl http://localhost:8080
+    - run: curl http://localhost:8080
