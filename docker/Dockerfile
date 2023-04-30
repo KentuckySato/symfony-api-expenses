@@ -11,7 +11,7 @@ RUN curl -sSk https://getcomposer.org/installer | php -- --disable-tls && \
 
 # Install git
 RUN apt update && \
-    apt install -yqq curl git
+    apt install -yqq curl git zip unzip libpq-dev
 
 COPY . /var/www/
 
