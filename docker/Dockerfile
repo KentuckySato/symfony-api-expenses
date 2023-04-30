@@ -11,7 +11,7 @@ RUN curl -sSk https://getcomposer.org/installer | php -- --disable-tls && \
 
 # Install git
 RUN apt update && \
-    apt install -yqq git
+    apt install -yqq curl git
 
 COPY . /var/www/
 
