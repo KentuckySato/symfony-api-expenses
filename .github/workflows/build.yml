@@ -28,4 +28,5 @@ jobs:
     - run: echo "Waiting for the app to start..." && sleep 10
     #   # Lancement des tests
     #   # (remplacer la commande ci-dessous par vos tests)
-    - run: curl http://localhost:8080
+    - name: Check HTTP reachability
+      run: curl http://localhost:8080
