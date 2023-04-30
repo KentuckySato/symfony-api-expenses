@@ -5,8 +5,13 @@ ADD https://github.com/mlocati/docker-php-extension-installer/releases/latest/do
 RUN chmod +x /usr/local/bin/install-php-extensions && \
     install-php-extensions pdo_pgsql intl
 
+# Install composer
 RUN curl -sSk https://getcomposer.org/installer | php -- --disable-tls && \
    mv composer.phar /usr/local/bin/composer
+
+# Install git
+RUN apt update && \
+    apt install -yqq git
 
 COPY . /var/www/
 
