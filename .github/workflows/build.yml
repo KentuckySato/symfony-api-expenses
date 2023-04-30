@@ -20,7 +20,7 @@ jobs:
     - name: Build and Run Docker Container
       uses: actions/checkout@v3
     # - run: docker build -t my-app . -f ./docker/Dockerfile && docker run -d -p 8080:8080 my-app
-    - run: docker compse up
+    - run: docker compose up
       # Attendre que l'application soit démarrée
       # avant de lancer les tests
     # - env:
