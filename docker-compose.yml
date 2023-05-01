@@ -8,6 +8,8 @@ services:
       - "8080:80"
     environment:
       DATABASE_URL: mysql://${MYSQL_USER:-symfony}:${MYSQL_PASSWORD:-symfony}@mysql:3306/${MYSQL_DATABASE:-app}
+    networks:
+      - symfony-api-expenses
 
   mysql:
         image: 'mysql/mysql-server:8.0'
