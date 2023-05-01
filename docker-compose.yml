@@ -3,13 +3,22 @@ version: '3'
 services:
 ###> doctrine/doctrine-bundle ###
   app:
+    # build:
+    #   context: ./docker
+    #   dockerfile: Dockerfile
     image: kentuckyss/symfony-api-skeleton:latest
     ports:
       - "8080:80"
+    extra_hosts:
+      - 'host.docker.internal:host-gateway'
+    volumes:
+      - '.:/var/www'
     environment:
       DATABASE_URL: mysql://${MYSQL_USER:-symfony}:${MYSQL_PASSWORD:-symfony}@mysql:3306/${MYSQL_DATABASE:-app}
     networks:
       - symfony-api-expenses
+    depends_on:
+      - mysql
 
   mysql:
         image: 'mysql/mysql-server:8.0'
@@ -30,7 +39,7 @@ services:
         networks:
             - symfony-api-expenses
         healthcheck:
-            test: ["CMD", "mysqladmin", "ping", "-p${DB_PASSWORD}"]
+            test: ["CMD", "mysqladmin", "ping", "-p${DB_PASSWORD:-symfony}"]
             retries: 3
             timeout: 5s
 
