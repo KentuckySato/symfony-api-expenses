@@ -1,5 +1,7 @@
 FROM php:8.2-apache
 
+LABEL maintainer="Kentucky SATO"
+
 ADD https://github.com/mlocati/docker-php-extension-installer/releases/latest/download/install-php-extensions /usr/local/bin/
 
 RUN chmod +x /usr/local/bin/install-php-extensions && \
@@ -13,12 +15,7 @@ RUN curl -sSk https://getcomposer.org/installer | php -- --disable-tls && \
 RUN apt update && \
     apt install -yqq curl git zip unzip libpq-dev
 
-COPY . /var/www/
-
-COPY ./docker/apache.conf /etc/apache2/sites-available/000-default.conf
-
-RUN cd /var/www && \
-    composer install
+COPY apache.conf /etc/apache2/sites-available/000-default.conf
 
 WORKDIR /var/www/
 
