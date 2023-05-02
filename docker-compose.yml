@@ -14,7 +14,7 @@ services:
     volumes:
       - '.:/var/www'
     environment:
-      DATABASE_URL: mysql://${MYSQL_USER:-symfony}:${MYSQL_PASSWORD:-symfony}@mysql:3306/${MYSQL_DATABASE:-app}
+      DATABASE_URL: mysql://${DB_USERNAME:-symfony}:${DB_PASSWORD:-symfony}@mysql:3306/${DB_DATABASE:-app}
     networks:
       - symfony-api-expenses
     depends_on:
