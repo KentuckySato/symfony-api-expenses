@@ -39,28 +39,39 @@ class ExpenseRepository extends ServiceEntityRepository
         }
     }
 
-//    /**
-//     * @return Expense[] Returns an array of Expense objects
-//     */
-//    public function findByExampleField($value): array
-//    {
-//        return $this->createQueryBuilder('e')
-//            ->andWhere('e.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->orderBy('e.id', 'ASC')
-//            ->setMaxResults(10)
-//            ->getQuery()
-//            ->getResult()
-//        ;
-//    }
+    public function findAll()
+    {
+        $query = $this
+            ->createQueryBuilder('e')
+            ->getQuery();
 
-//    public function findOneBySomeField($value): ?Expense
-//    {
-//        return $this->createQueryBuilder('e')
-//            ->andWhere('e.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->getQuery()
-//            ->getOneOrNullResult()
-//        ;
-//    }
+        $result = $query->getArrayResult();
+
+        return $result;
+    }
+
+    //    /**
+    //     * @return Expense[] Returns an array of Expense objects
+    //     */
+    //    public function findByExampleField($value): array
+    //    {
+    //    return $this->createQueryBuilder('e')
+    //        ->andWhere('e.exampleField = :val')
+    //        ->setParameter('val', $value)
+    //        ->orderBy('e.id', 'ASC')
+    //        ->setMaxResults(10)
+    //        ->getQuery()
+    //        ->getResult()
+    //        ;
+    //    }
+
+    //    public function findOneBySomeField($value): ?Expense
+    //    {
+    //        return $this->createQueryBuilder('e')
+    //            ->andWhere('e.exampleField = :val')
+    //            ->setParameter('val', $value)
+    //            ->getQuery()
+    //            ->getOneOrNullResult()
+    //        ;
+    //    }
 }
