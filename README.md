@@ -15,5 +15,25 @@ Creating a REST API for expense management.
 
 - Clone the repository
 - Run `composer install`
-- Run `docker-compose up -d`
+- Run `docker compose up -d`
+
+# Migration
+
+## Créer une migration
+
+```bash
+symfony console make:migration
+```
+
+## Exécuter les migrations
+
+```bash
+symfony console doctrine:migrations:migrate
+```
+
+## Ajouter des données de tests
+
+```bash
+symfony console doctrine:fixtures:load
+```
 
