@@ -42,8 +42,8 @@ class ExpenseRepository extends ServiceEntityRepository
     public function findAll()
     {
         $query = $this
-            ->createQueryBuilder('e')
-            ->getQuery();
+        ->createQueryBuilder('e')
+        ->getQuery();
 
         $result = $query->getArrayResult();
 
