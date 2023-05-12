@@ -19,19 +19,19 @@ Creating a REST API for expense management.
 
 # Migration
 
-## Créer une migration
+## Create migration
 
 ```bash
 symfony console make:migration
 ```
 
-## Exécuter les migrations
+## Launch migrations
 
 ```bash
 symfony console doctrine:migrations:migrate
 ```
 
-## Ajouter des données de tests
+## Add fixtures
 
 ```bash
 symfony console doctrine:fixtures:load
