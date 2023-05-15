@@ -16,6 +16,7 @@ Creating a REST API for expense management.
 - Clone the repository
 - Run `composer install`
 - Run `docker compose up -d`
+- Run `symfony console app:reset-db` to create the database and load the fixtures
 
 # Migration
 

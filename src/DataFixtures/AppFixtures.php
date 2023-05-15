@@ -29,10 +29,10 @@ class AppFixtures extends Fixture
             ->setEmail($faker->email())
             ->setRoles(['ROLE_ADMIN'])
             ->setBirthday($faker->dateTimeBetween('-50 years', '-18 years'))
-            ->setCreatedAt($faker->dateTimeBetween('-6 month', 'now'));
+            ->setCreatedAt(new \DateTime())
+        ;
 
-
-        $password = $this->hasher->hashPassword($user, 'hxeu3ndz!rfages');
+        $password = $this->hasher->hashPassword($user, 'symfony');
         $user->setPassword($password);
 
         $manager->persist($user);
