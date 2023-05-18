@@ -98,4 +98,16 @@ class Expense
 
         return $this;
     }
+
+    public function toArray(): array
+    {
+        return [
+            'id' => $this->getId(),
+            'type' => $this->getType(),
+            'amount' => $this->getAmount(),
+            'date' => $this->getDate()->format('Y-m-d'),
+            'user_id' => $this->getUserId()->getId(),
+            'company_id' => $this->getCompanyId()->getId(),
+        ];
+    }
 }
