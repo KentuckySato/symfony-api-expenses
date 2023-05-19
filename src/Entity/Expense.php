@@ -8,6 +8,7 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: ExpenseRepository::class)]
+#[ORM\HasLifecycleCallbacks]
 class Expense
 {
     use DateTrait;
@@ -26,11 +27,11 @@ class Expense
     #[ORM\Column(type: Types::DATE_MUTABLE)]
     private ?\DateTimeInterface $date = null;
 
-    #[ORM\ManyToOne(inversedBy: 'expenses')]
+    #[ORM\ManyToOne(inversedBy: 'expenses', cascade: ['persist'])]
     #[ORM\JoinColumn(nullable: false)]
     private ?User $user_id = null;
 
-    #[ORM\ManyToOne(inversedBy: 'expenses')]
+    #[ORM\ManyToOne(inversedBy: 'expenses', cascade: ['persist'])]
     #[ORM\JoinColumn(nullable: false)]
     private ?Company $company_id = null;
 
@@ -97,6 +98,12 @@ class Expense
         $this->company_id = $company_id;
 
         return $this;
+    }
+
+    #[ORM\PrePersist]
+    public function prePersist()
+    {
+        $this->created_at = new \DateTime();
     }
 
     public function toArray(): array
