@@ -4,69 +4,58 @@ namespace App\Controller;
 
 use App\Entity\Expense;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use App\Repository\ExpenseRepository;
+use App\Service\Expense\ServiceExpenseHydrator;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Serializer\SerializerInterface;
 
 class ExpenseController extends AbstractController
 {
-
-    public function __construct(public ExpenseRepository $repository)
+    public function __construct(public EntityManagerInterface $entityManager)
     {
     }
 
     #[Route('/expenses', name: 'expenses.index', methods: ['GET'])]
-    public function index(Request $request): JsonResponse
+    public function index(SerializerInterface $serializer): JsonResponse
     {
-        if ($request->isMethod('GET')) {
+        $arrExpenses = $this->entityManager->getRepository(Expense::class)->findAll();
 
-            // Get all expenses
-            // Use ExpenseRepository to get all expenses
-            // Return a JsonResponse with all expenses
-            $arrExpenses = $this->repository->findAll();
-
-            return new JsonResponse([
-                'message' => 'GET method',
-                'path' => '/expenses',
-                'data' => $arrExpenses
-            ]);
-        }
+        return new JsonResponse(
+            data: $serializer->serialize($arrExpenses, 'json'),
+            json: true
+        );
     }
 
     #[Route('/expenses/{id}', name: 'expenses.show')]
     public function show(Expense $expense): JsonResponse
     {
-
         return new JsonResponse([
-            'message' => 'GET method',
+            'message' => 'Expense #' . $expense->getId() . ' founded.',
             'path' => '/expenses/{id}',
             'data' => $expense->toArray()
         ]);
     }
 
-    // @todo Create a new expense
-    // #[Route('/expenses', name: 'expenses.create', methods: ['POST'])]
-    // public function create(Request $request): JsonResponse
-    // {
-    //     $expense = new Expense();
-    //     dd($request);
-    //     $expense->setType($request->get('type'));
-    //     $expense->setAmount($request->get('amount'));
-    //     $expense->setDate($request->get('date'));
-    //     $expense->setUserId($request->get('user_id'));
-    //     $expense->setCompanyId($request->get('company_id'));
+    #[Route('/expenses', name: 'expenses.create', methods: ['POST'], format: 'json')]
+    public function create(Request $request): JsonResponse
+    {
+        // Extract data from the request
+        $data = json_decode($request->getContent(), true);
 
+        $serviceExpenseHydrate = new ServiceExpenseHydrator($this->entityManager);
+        $expense = $serviceExpenseHydrate->hydrate($data);
 
-    //     // Create an expense
-    //     // Use ExpenseRepository to create an expense
-    //     // Return a JsonResponse with the created expense
-    //     $expense = $this->repository->save($expense);
+        $this->entityManager->getRepository(Expense::class)->save($expense, true);
 
-    //     return new JsonResponse([
-    //         'message' => 'POST method',
-    //         'path' => '/expenses',
-    //         'data' => $expense
-    //     ]);
-    // }
+        return new JsonResponse(
+            [
+                'message' => 'Expense #' . $expense->getId() . ' created.',
+                'path' => '/expenses',
+                'data' => $expense->toArray()
+            ],
+            JsonResponse::HTTP_CREATED
+        );
+    }
 }
