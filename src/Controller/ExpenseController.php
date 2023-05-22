@@ -9,6 +9,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class ExpenseController extends AbstractController
 {
@@ -47,20 +48,37 @@ class ExpenseController extends AbstractController
     }
 
     #[Route('/expenses', name: 'expenses.create', methods: ['POST'], format: 'json')]
-    public function create(Request $request): JsonResponse
+    public function create(Request $request, ValidatorInterface $validator): JsonResponse
     {
         // Extract data from the request
         $data = json_decode($request->getContent(), true);
 
+
         $serviceExpenseHydrate = new ServiceExpenseHydrator($this->entityManager);
         $expense = $serviceExpenseHydrate->hydrate($data);
+        $errors = $validator->validate($expense);
+        if (count($errors) > 0) {
+            /*
+             * Uses a __toString method on the $errors variable which is a
+             * ConstraintViolationList object. This gives us a nice string
+             * for debugging.
+             */
+            $errorsString = (string) $errors;
+
+            return new JsonResponse(
+                [
+                    'message' => $errorsString
+                ],
+                JsonResponse::HTTP_BAD_REQUEST
+            );
+        }
 
         $this->entityManager->getRepository(Expense::class)->save($expense, true);
 
         return new JsonResponse(
             [
                 'message' => 'Expense #' . $expense->getId() . ' created.',
-                'path' => '/expenses',
+                'path' => '/expenses/' . $expense->getId(),
                 'data' => $expense->toArray()
             ],
             JsonResponse::HTTP_CREATED

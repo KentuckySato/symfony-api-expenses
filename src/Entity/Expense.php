@@ -8,6 +8,7 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Serializer\Annotation\MaxDepth;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: ExpenseRepository::class)]
 #[ORM\HasLifecycleCallbacks]
@@ -23,10 +24,13 @@ class Expense
 
     #[ORM\Column]
     #[Groups(['expense'])]
+    #[Assert\NotBlank]
     private ?int $type = null;
 
     #[ORM\Column]
     // #[Groups(['expense'])]
+    #[Assert\NotBlank()]
+    #[Assert\PositiveOrZero()]
     private ?float $amount = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE)]
