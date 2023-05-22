@@ -35,4 +35,22 @@ trait DateTrait
 
         return $this;
     }
+
+    /**
+     * set createdAt value before insert
+     */
+    #[ORM\PrePersist]
+    public function prePersist()
+    {
+        $this->created_at = new \DateTime();
+    }
+
+    /**
+     * set updatedAt value before update
+     */
+    #[ORM\PreUpdate]
+    public function setUpdatedAtValue()
+    {
+        $this->updated_at = new \DateTime();
+    }
 }

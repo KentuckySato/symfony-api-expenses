@@ -37,7 +37,7 @@ class ExpenseController extends AbstractController
         );
     }
 
-    #[Route('/expenses/{id}', name: 'expenses.show')]
+    #[Route('/expenses/{id}', name: 'expenses.show', methods: ['GET'], requirements: ['id' => '\d+'])]
     public function show(Expense $expense): JsonResponse
     {
         return new JsonResponse([
@@ -56,13 +56,9 @@ class ExpenseController extends AbstractController
 
         $serviceExpenseHydrate = new ServiceExpenseHydrator($this->entityManager);
         $expense = $serviceExpenseHydrate->hydrate($data);
+
         $errors = $validator->validate($expense);
         if (count($errors) > 0) {
-            /*
-             * Uses a __toString method on the $errors variable which is a
-             * ConstraintViolationList object. This gives us a nice string
-             * for debugging.
-             */
             $errorsString = (string) $errors;
 
             return new JsonResponse(
@@ -82,6 +78,38 @@ class ExpenseController extends AbstractController
                 'data' => $expense->toArray()
             ],
             JsonResponse::HTTP_CREATED
+        );
+    }
+
+    #[Route('/expenses/{id}', name: 'expenses.update', methods: ['PUT'], requirements: ['id' => '\d+'], format: 'json')]
+    public function update(Request $request, Expense $expense, ValidatorInterface $validator): JsonResponse
+    {
+        // Extract data from the request
+        $data = json_decode($request->getContent(), true);
+
+        $serviceExpenseHydrate = new ServiceExpenseHydrator($this->entityManager);
+        $expense = $serviceExpenseHydrate->hydrate($data, $expense);
+        $errors = $validator->validate($expense);
+        if (count($errors) > 0) {
+            $errorsString = (string) $errors;
+
+            return new JsonResponse(
+                [
+                    'message' => $errorsString
+                ],
+                JsonResponse::HTTP_BAD_REQUEST
+            );
+        }
+
+        $this->entityManager->getRepository(Expense::class)->flush();
+
+        return new JsonResponse(
+            [
+                'message' => 'Expense #' . $expense->getId() . ' updated.',
+                'path' => '/expenses/' . $expense->getId(),
+                'data' => $expense->toArray()
+            ],
+            JsonResponse::HTTP_OK
         );
     }
 }

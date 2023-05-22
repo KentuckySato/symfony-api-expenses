@@ -16,9 +16,12 @@ class ServiceExpenseHydrator
     {
     }
 
-    public function hydrate(array $data): Expense
+    public function hydrate(array $data, Expense $expense = null): Expense
     {
-        $expense = new Expense();
+        // It's a new expense => POST
+        if ($expense === null) {
+            $expense = new Expense();
+        }
 
         if (!empty($data['type'])) {
             $expense->setType($data['type']);
@@ -27,7 +30,6 @@ class ServiceExpenseHydrator
             $expense->setAmount($data['amount']);
         }
         if (!empty($data['date'])) {
-
             $expense->setDate(
                 \DateTime::createFromFormat('Y-m-d', $data['date'])
             );

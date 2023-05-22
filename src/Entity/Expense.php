@@ -113,12 +113,6 @@ class Expense
         return $this;
     }
 
-    #[ORM\PrePersist]
-    public function prePersist()
-    {
-        $this->created_at = new \DateTime();
-    }
-
     public function toArray(): array
     {
         return [
@@ -128,6 +122,8 @@ class Expense
             'date' => $this->getDate()->format('Y-m-d'),
             'user' => $this->getUser()->toArray(),
             'company' => $this->getCompany()->toArray(),
+            'created_at' => $this->getCreatedAt(),
+            'updated_at' => $this->getUpdatedAt(),
         ];
     }
 }
