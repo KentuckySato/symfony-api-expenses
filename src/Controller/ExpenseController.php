@@ -112,4 +112,18 @@ class ExpenseController extends AbstractController
             JsonResponse::HTTP_OK
         );
     }
+
+    #[Route('/expenses/{id}', name: 'expenses.delete', methods: ['DELETE'], requirements: ['id' => '\d+'])]
+    public function delete(Expense $expense): JsonResponse
+    {
+        $id = $expense->getId();
+        $this->entityManager->getRepository(Expense::class)->remove($expense, true);
+
+        return new JsonResponse(
+            [
+                'message' => 'Expense #' . $id . ' deleted.',
+            ],
+            JsonResponse::HTTP_OK
+        );
+    }
 }
