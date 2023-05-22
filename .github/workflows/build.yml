@@ -15,18 +15,13 @@ jobs:
     build:
         runs-on: ubuntu-latest
         steps:
-            - name: Checkout
-              uses: actions/checkout@v3
-            - name: Docker Build
-              run: |
-                  cd ./docker
-                  docker build -t symfony-api-skeleton .
-                  docker run -d -p 8081:80 symfony-api-skeleton
-              # - run: docker build -t my-app . -f ./docker/Dockerfile && docker run -d -p 8080:8080 my-app
-            - name: Docker Compose
-              run: docker compose up -d
-            - name: Wait for app to start
-              run: echo "Waiting for the app to start..." && sleep 10
-            - name: Check HTTP reachability
-              run: curl http://localhost:8081
-              ## the app in the docker-compose.yml
+          - name: Checkout
+            uses: actions/checkout@v3
+          - name: Docker Compose Build
+            run: docker compose build
+          - name: Docker Compose
+            run: docker compose up -d
+          - name: Wait for app to start
+            run: echo "Waiting for the app to start..." && sleep 10
+          - name: Check HTTP reachability
+            run: curl http://localhost:8080
