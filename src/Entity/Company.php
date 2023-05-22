@@ -65,7 +65,7 @@ class Company
     {
         if (!$this->expenses->contains($expense)) {
             $this->expenses->add($expense);
-            $expense->setCompanyId($this);
+            $expense->setCompany($this);
         }
 
         return $this;
@@ -75,11 +75,21 @@ class Company
     {
         if ($this->expenses->removeElement($expense)) {
             // set the owning side to null (unless already changed)
-            if ($expense->getCompanyId() === $this) {
-                $expense->setCompanyId(null);
+            if ($expense->getCompany() === $this) {
+                $expense->setCompany(null);
             }
         }
 
         return $this;
+    }
+
+    public function toArray(): array
+    {
+        return [
+            'id' => $this->getId(),
+            'name' => $this->getName(),
+            'created_at' => $this->getCreatedAt(),
+            'updated_at' => $this->getUpdatedAt(),
+        ];
     }
 }

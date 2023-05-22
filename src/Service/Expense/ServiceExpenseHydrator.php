@@ -36,11 +36,11 @@ class ServiceExpenseHydrator
         // Find user and company by id
         if (!empty($data['user_id'])) {
             $user = $this->entityManager->getRepository(User::class)->find($data['user_id']);
-            $expense->setUserId($user);
+            $expense->setUser($user);
         }
         if (!empty($data['company_id'])) {
             $company = $this->entityManager->getRepository(Company::class)->find($data['company_id']);
-            $expense->setCompanyId($company);
+            $expense->setCompany($company);
         }
 
         return $expense;

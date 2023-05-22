@@ -21,10 +21,10 @@ final class Version20230512220940 extends AbstractMigration
     {
         // this up() migration is auto-generated, please modify it to your needs
         $this->addSql('CREATE TABLE company (id INT AUTO_INCREMENT NOT NULL, name VARCHAR(255) NOT NULL, created_at DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL, updated_at DATETIME DEFAULT NULL, PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE = InnoDB');
-        $this->addSql('CREATE TABLE expense (id INT AUTO_INCREMENT NOT NULL, user_id_id INT NOT NULL, company_id_id INT NOT NULL, type INT NOT NULL, amount DOUBLE PRECISION NOT NULL, date DATE NOT NULL, created_at DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL, updated_at DATETIME DEFAULT NULL, INDEX IDX_2D3A8DA69D86650F (user_id_id), INDEX IDX_2D3A8DA638B53C32 (company_id_id), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE = InnoDB');
+        $this->addSql('CREATE TABLE expense (id INT AUTO_INCREMENT NOT NULL, user_id INT NOT NULL, company_id INT NOT NULL, type INT NOT NULL, amount DOUBLE PRECISION NOT NULL, date DATE NOT NULL, created_at DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL, updated_at DATETIME DEFAULT NULL, INDEX IDX_2D3A8DA69D86650F (user_id), INDEX IDX_2D3A8DA638B53C32 (company_id), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE = InnoDB');
         $this->addSql('CREATE TABLE user (id INT AUTO_INCREMENT NOT NULL, roles JSON NOT NULL, firstname VARCHAR(255) NOT NULL, lastname VARCHAR(255) NOT NULL, birthday DATE NOT NULL, email VARCHAR(255) NOT NULL, password VARCHAR(255) NOT NULL, created_at DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL, updated_at DATETIME DEFAULT NULL, PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE = InnoDB');
-        $this->addSql('ALTER TABLE expense ADD CONSTRAINT FK_2D3A8DA69D86650F FOREIGN KEY (user_id_id) REFERENCES user (id)');
-        $this->addSql('ALTER TABLE expense ADD CONSTRAINT FK_2D3A8DA638B53C32 FOREIGN KEY (company_id_id) REFERENCES company (id)');
+        $this->addSql('ALTER TABLE expense ADD CONSTRAINT FK_2D3A8DA69D86650F FOREIGN KEY (user_id) REFERENCES user (id)');
+        $this->addSql('ALTER TABLE expense ADD CONSTRAINT FK_2D3A8DA638B53C32 FOREIGN KEY (company_id) REFERENCES company (id)');
     }
 
     public function down(Schema $schema): void

@@ -39,17 +39,20 @@ class ExpenseRepository extends ServiceEntityRepository
         }
     }
 
-    public function findAll()
-    {
-        $query = $this
-            ->createQueryBuilder('e')
-            ->getQuery()
-        ;
+    // public function findAll()
+    // {
+    //     $query = $this
+    //         ->createQueryBuilder('e')
+    //         ->leftJoin('e.user', 'u')
+    //         ->leftJoin('e.company', 'c')
+    //         ->select('e.id', 'e.type', 'e.amount', 'e.date', 'u.firstname as user', 'c.name as company')
+    //         ->getQuery()
+    //     ;
 
-        $result = $query->getArrayResult();
+    //     $result = $query->getArrayResult();
 
-        return $result;
-    }
+    //     return $result;
+    // }
 
     //    /**
     //     * @return Expense[] Returns an array of Expense objects

@@ -6,6 +6,8 @@ use App\Repository\ExpenseRepository;
 use App\Trait\DateTrait;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Serializer\Annotation\MaxDepth;
 
 #[ORM\Entity(repositoryClass: ExpenseRepository::class)]
 #[ORM\HasLifecycleCallbacks]
@@ -15,25 +17,32 @@ class Expense
 
     #[ORM\Id]
     #[ORM\GeneratedValue]
-    #[ORM\Column(type: 'integer')]
+    #[ORM\Column(type: Types::INTEGER)]
+    #[Groups(['expense'])]
     private ?int $id = null;
 
     #[ORM\Column]
+    #[Groups(['expense'])]
     private ?int $type = null;
 
     #[ORM\Column]
+    // #[Groups(['expense'])]
     private ?float $amount = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE)]
+    // #[Groups(['expense'])]
     private ?\DateTimeInterface $date = null;
 
-    #[ORM\ManyToOne(inversedBy: 'expenses', cascade: ['persist'])]
-    #[ORM\JoinColumn(nullable: false)]
-    private ?User $user_id = null;
+    #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'expenses', cascade: ['persist'], fetch: 'EAGER')]
+    #[ORM\JoinColumn(name: 'user_id', referencedColumnName: 'id', nullable: false)]
+    // #[Groups(["expense"])]
+    #[MaxDepth(1)]
+    private ?User $user = null;
 
-    #[ORM\ManyToOne(inversedBy: 'expenses', cascade: ['persist'])]
-    #[ORM\JoinColumn(nullable: false)]
-    private ?Company $company_id = null;
+    #[ORM\ManyToOne(targetEntity: Company::class, inversedBy: 'expenses', cascade: ['persist'], fetch: 'EAGER')]
+    #[ORM\JoinColumn(name: 'company_id', referencedColumnName: 'id', nullable: false)]
+    // #[Groups(["expense"])]
+    private ?Company $company = null;
 
     public function getId(): ?int
     {
@@ -76,26 +85,26 @@ class Expense
         return $this;
     }
 
-    public function getUserId(): ?User
+    public function getUser(): ?User
     {
-        return $this->user_id;
+        return $this->user;
     }
 
-    public function setUserId(?User $user_id): self
+    public function setUser(?User $user): self
     {
-        $this->user_id = $user_id;
+        $this->user = $user;
 
         return $this;
     }
 
-    public function getCompanyId(): ?Company
+    public function getCompany(): ?Company
     {
-        return $this->company_id;
+        return $this->company;
     }
 
-    public function setCompanyId(?Company $company_id): self
+    public function setCompany(?Company $company): self
     {
-        $this->company_id = $company_id;
+        $this->company = $company;
 
         return $this;
     }
@@ -113,8 +122,8 @@ class Expense
             'type' => $this->getType(),
             'amount' => $this->getAmount(),
             'date' => $this->getDate()->format('Y-m-d'),
-            'user_id' => $this->getUserId()->getId(),
-            'company_id' => $this->getCompanyId()->getId(),
+            'user' => $this->getUser()->toArray(),
+            'company' => $this->getCompany()->toArray(),
         ];
     }
 }

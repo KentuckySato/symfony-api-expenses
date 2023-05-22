@@ -55,9 +55,9 @@ class AppFixtures extends Fixture
             $expense = new Expense();
 
             $expense
-                ->setUserId($user)
+                ->setUser($user)
                 ->setAmount($faker->randomFloat(2, 10, 100))
-                ->setCompanyId($faker->randomElement($cmpArray))
+                ->setCompany($faker->randomElement($cmpArray))
                 ->setDate($faker->dateTimeBetween('-6 month', 'now'))
                 ->setType($faker->numberBetween(1, 3))
                 ->setCreatedAt($faker->dateTimeBetween('-6 month', 'now'));

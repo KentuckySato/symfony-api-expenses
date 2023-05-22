@@ -10,6 +10,8 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Serializer\Annotation\MaxDepth;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
@@ -19,27 +21,36 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
+    #[Groups(['user'])]
     private ?int $id = null;
 
     #[ORM\Column(type: 'json')]
+    #[Groups(['user'])]
     private $roles = [];
 
     #[ORM\Column(length: 255)]
+    #[Groups(['user'])]
     private ?string $firstname = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups(['user'])]
     private ?string $lastname = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE)]
+    #[Groups(['user'])]
     private ?\DateTimeInterface $birthday = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups(['user'])]
     private ?string $email = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups(['auth'])]
     private ?string $password = null;
 
-    #[ORM\OneToMany(mappedBy: 'user_id', targetEntity: Expense::class, orphanRemoval: true)]
+    #[ORM\OneToMany(mappedBy: 'user', targetEntity: Expense::class, orphanRemoval: true)]
+    // #[Groups(['user'])]
+    #[MaxDepth(1)]
     private Collection $expenses;
 
     public function __construct()
@@ -131,7 +142,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         if (!$this->expenses->contains($expense)) {
             $this->expenses->add($expense);
-            $expense->setUserId($this);
+            $expense->setUser($this);
         }
 
         return $this;
@@ -141,8 +152,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         if ($this->expenses->removeElement($expense)) {
             // set the owning side to null (unless already changed)
-            if ($expense->getUserId() === $this) {
-                $expense->setUserId(null);
+            if ($expense->getUser() === $this) {
+                $expense->setUser(null);
             }
         }
 
@@ -185,5 +196,33 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         // If you store any temporary, sensitive data on the user, clear it here
         // $this->plainPassword = null;
+    }
+
+    public function toArray(): array
+    {
+        // $expenses = [];
+        // if (! empty($this->getExpenses())) {
+        //     foreach ($this->getExpenses() as $expense) {
+        //         $expenses[] = [
+        //             'id' => $expense->getId(),
+        //             'type' => $expense->getType(),
+        //             'amount' => $expense->getAmount(),
+        //             'date' => $expense->getDate(),
+        //             'created_at' => $expense->getCreatedAt(),
+        //             'updated_at' => $expense->getUpdatedAt(),
+        //         ];
+        //     }
+        // }
+        return [
+            'id' => $this->getId(),
+            'firstname' => $this->getFirstname(),
+            'lastname' => $this->getLastname(),
+            'birthday' => $this->getBirthday(),
+            'email' => $this->getEmail(),
+            'roles' => $this->getRoles(),
+            // 'expenses' => $expenses,
+            'created_at' => $this->getCreatedAt(),
+            'updated_at' => $this->getUpdatedAt(),
+        ];
     }
 }

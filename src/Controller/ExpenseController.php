@@ -9,7 +9,6 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Serializer\SerializerInterface;
 
 class ExpenseController extends AbstractController
 {
@@ -18,13 +17,22 @@ class ExpenseController extends AbstractController
     }
 
     #[Route('/expenses', name: 'expenses.index', methods: ['GET'])]
-    public function index(SerializerInterface $serializer): JsonResponse
+    public function index(): JsonResponse
     {
         $arrExpenses = $this->entityManager->getRepository(Expense::class)->findAll();
 
+        $toArray = array_map(function ($expense) {
+            /** @var Expense $expense */
+            return $expense->toArray();
+        }, $arrExpenses);
+
+
         return new JsonResponse(
-            data: $serializer->serialize($arrExpenses, 'json'),
-            json: true
+            data: [
+                'message' => count($toArray) . ' Expenses founded.',
+                'path' => '/expenses',
+                'data' => $toArray
+            ],
         );
     }
 
