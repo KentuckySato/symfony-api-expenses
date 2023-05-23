@@ -23,6 +23,8 @@ jobs:
             run: docker compose up -d
           - name: Composer Install
             run: composer install
+          - name: Symfony Server Start
+            run: symfony server:start --no-tls
           - name: Wait for app to start
             run: echo "Waiting for the app to start..." && sleep 10
           - name: Display app logs
