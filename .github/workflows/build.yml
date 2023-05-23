@@ -25,11 +25,15 @@ jobs:
             run: composer install
           - name: Symfony CLI Install
             run: curl -sS https://get.symfony.com/cli/installer | bash && mv /home/runner/.symfony5/bin/symfony /usr/local/bin/symfony
-          - name: Symfony Server Start
-            run: symfony server:start --no-tls -d
-          - name: Wait for app to start
-            run: echo "Waiting for the app to start..." && sleep 10
-          - name: Display app logs
-            run: docker compose logs app
-          - name: Check HTTP reachability
-            run: curl http://localhost:8080
+          - name: Symfony Check Requirements
+            run: symfony check:requirements
+          - name: PHPUnit
+            run: composer test
+          # - name: Symfony Server Start
+          #   run: symfony server:start --no-tls -d
+          # - name: Wait for app to start
+          #   run: echo "Waiting for the app to start..." && sleep 10
+          # - name: Display app logs
+          #   run: docker compose logs app
+          # - name: Check HTTP reachability
+          #   run: curl http://localhost:8080
