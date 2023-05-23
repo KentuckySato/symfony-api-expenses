@@ -24,7 +24,7 @@ jobs:
           - name: Composer Install
             run: composer install
           - name: Symfony CLI Install
-            run: curl -sS https://get.symfony.com/cli/installer | bash
+            run: curl -sS https://get.symfony.com/cli/installer | bash && mv /home/runner/.symfony5/bin/symfony /usr/local/bin/symfony
           - name: Symfony Server Start
             run: symfony server:start --no-tls
           - name: Wait for app to start
